@@ -10,9 +10,9 @@ import UIKit
 
 class ImageViewController: UIViewController {
   
-  private var imageName: String!
-  private var imageView: ImageView!
-  private var imageMeta: ImageMeta!
+  fileprivate var imageName: String!
+  fileprivate var imageView: ImageView!
+  fileprivate var imageMeta: ImageMeta!
   
   // MARK: - Initialization
   
@@ -21,43 +21,43 @@ class ImageViewController: UIViewController {
   }
   
   required init(imageName: String) {
-    super.init(nibName: String(self.dynamicType), bundle: nil)
+    super.init(nibName: String(describing: type(of: self)), bundle: nil)
     self.imageName = imageName
   }
   
   // MARK: - UIView
   
-  override func viewDidAppear(animated: Bool) {
+  override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
    
-    self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "close")
+    self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(ImageViewController.close))
     
-    self.imageView = UINib(nibName: "ImageView", bundle: nil).instantiateWithOwner(nil, options: nil)[0] as? ImageView
+    self.imageView = UINib(nibName: "ImageView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? ImageView
     
     self.loadImage() { image in
       self.imageView?.setupWithImage(image, inView: self.view)
       
       let imageMeta = ImageMeta(name: self.imageName, image: image)
-      let label = UILabel(frame: CGRectMake(0, 0, 44, 320))
+      let label = UILabel(frame: CGRect(x: 0, y: 0, width: 44, height: 320))
       label.text = String(format: "Last opened: %@, size: %@", imageMeta.findLastDate(), imageMeta.imageSize())
-      label.font = UIFont.systemFontOfSize(10)
+      label.font = UIFont.systemFont(ofSize: 10)
       self.navigationItem.titleView = label
     }
   }
   
   // MARK: -
   
-  @objc private func close() {
-    self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+  @objc fileprivate func close() {
+    self.navigationController?.dismiss(animated: true, completion: nil)
   }
   
-  private func loadImage(completion: (image: UIImage) -> Void) {
+  fileprivate func loadImage(_ completion: @escaping (_ image: UIImage) -> Void) {
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+    DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
       let image = UIImage(named: self.imageName)!
       
-      dispatch_async(dispatch_get_main_queue(), { () -> Void in
-        completion(image: image)
+      DispatchQueue.main.async(execute: { () -> Void in
+        completion(image)
       })
     }
   }

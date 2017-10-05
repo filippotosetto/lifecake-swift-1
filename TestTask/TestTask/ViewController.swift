@@ -10,11 +10,11 @@ import UIKit
 
 class ViewController: UIViewController {
   
-  @IBOutlet private weak var collectionView: UICollectionView!
+  @IBOutlet fileprivate weak var collectionView: UICollectionView!
   
-  private var dataSource = [(id: String, imageName: String)]()
-  private var uniqueKeys = [String]()
-  private let itemsCount = 10000
+  fileprivate var dataSource = [(id: String, imageName: String)]()
+  fileprivate var uniqueKeys = [String]()
+  fileprivate let itemsCount = 10000
   
   // MARK: - Initialization
   
@@ -23,7 +23,7 @@ class ViewController: UIViewController {
   }
   
   required init() {
-    super.init(nibName: String(self.dynamicType), bundle: nil)
+    super.init(nibName: String(describing: type(of: self)), bundle: nil)
   }
   
   // MARK: - UIView
@@ -32,13 +32,13 @@ class ViewController: UIViewController {
     super.viewDidLoad()
     
     self.loadData()
-    self.collectionView.registerNib(UINib(nibName: "CollectionViewCell", bundle: nil), forCellWithReuseIdentifier: String(CollectionViewCell))
+    self.collectionView.register(UINib(nibName: "CollectionViewCell", bundle: nil), forCellWithReuseIdentifier: String(describing: CollectionViewCell.self))
     self.collectionView.reloadData()
   }
 
   // MARK: -
   
-  private func loadData() {
+  fileprivate func loadData() {
     let startTime = CACurrentMediaTime()
     
     for i in 0..<self.itemsCount {
@@ -58,12 +58,12 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
   
   // MARK: - UICollectionViewDataSource
   
-  func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return self.dataSource.count
   }
   
-  func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(String(CollectionViewCell), forIndexPath: indexPath) as! CollectionViewCell
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: CollectionViewCell.self), for: indexPath) as! CollectionViewCell
     let data = self.dataSource[indexPath.row]
     
     cell.configureForImage(data.imageName)
@@ -73,10 +73,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
   
   // MARK: - UICollectionViewDelegate
   
-  func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let data = self.dataSource[indexPath.row]
     let imageController = ImageViewController(imageName: data.imageName)
-    self.navigationController?.presentViewController(UINavigationController(rootViewController: imageController), animated: true, completion: nil)
+    self.navigationController?.present(UINavigationController(rootViewController: imageController), animated: true, completion: nil)
   }
 }
 

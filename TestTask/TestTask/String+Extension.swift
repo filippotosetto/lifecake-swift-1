@@ -10,13 +10,13 @@ import Foundation
 
 extension String {
   
-  static func randomString(length: Int) -> String {
+  static func randomString(_ length: Int) -> String {
     let charactersString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    let charactersArray = Array(arrayLiteral: charactersString)
+    let charactersArray = Array(charactersString)
     
     var string = ""
     for _ in 0..<length {
-      string += charactersArray[Int(arc4random()) % charactersArray.count]
+      string.append(charactersArray[Int(arc4random()) % charactersArray.count])
     }
     
     return string

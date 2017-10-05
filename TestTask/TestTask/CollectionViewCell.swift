@@ -10,14 +10,14 @@ import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
   
-  @IBOutlet private weak var imageView: UIImageView!
+  @IBOutlet fileprivate weak var imageView: UIImageView!
   
   override func awakeFromNib() {
     super.awakeFromNib()
     // Initialization code
   }
   
-  func configureForImage(name: String) {
+  func configureForImage(_ name: String) {
     self.loadThumbnail(name) { (thumb) -> Void in
       self.imageView.image = thumb
     }
@@ -25,31 +25,31 @@ class CollectionViewCell: UICollectionViewCell {
   
   // MARK: -
   
-  private func loadThumbnail(name: String, completion: (thumb: UIImage) -> Void) {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+  fileprivate func loadThumbnail(_ name: String, completion: @escaping (_ thumb: UIImage) -> Void) {
+    DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
       let image = UIImage(named: name)!
       let thumbnail = self.thumbnailFromImage(image)
       
-      completion(thumb: thumbnail)
+      completion(thumbnail)
     }
   }
   
-  private func thumbnailFromImage(image: UIImage) -> UIImage {
-    let cgImage = image.CGImage
+  fileprivate func thumbnailFromImage(_ image: UIImage) -> UIImage {
+    let cgImage = image.cgImage
     
-    let width = CGImageGetWidth(cgImage) / 3
-    let height = CGImageGetHeight(cgImage) / 3
-    let bitsPerComponent = CGImageGetBitsPerComponent(cgImage)
-    let bytesPerRow = CGImageGetBytesPerRow(cgImage)
-    let colorSpace = CGImageGetColorSpace(cgImage)
-    let bitmapInfo = CGImageGetBitmapInfo(cgImage)
+    let width = (cgImage?.width)! / 3
+    let height = (cgImage?.height)! / 3
+    let bitsPerComponent = cgImage?.bitsPerComponent
+    let bytesPerRow = cgImage?.bytesPerRow
+    let colorSpace = cgImage?.colorSpace
+    let bitmapInfo = cgImage?.bitmapInfo
     
-    let context = CGBitmapContextCreate(nil, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo.rawValue)
+    let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent!, bytesPerRow: bytesPerRow!, space: colorSpace!, bitmapInfo: (bitmapInfo?.rawValue)!)
     
-    CGContextSetInterpolationQuality(context, CGInterpolationQuality.High)
+    context!.interpolationQuality = CGInterpolationQuality.high
     
-    CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: CGFloat(width), height: CGFloat(height))), cgImage)
+    context?.draw(cgImage!, in: CGRect(origin: CGPoint.zero, size: CGSize(width: CGFloat(width), height: CGFloat(height))))
     
-    return UIImage(CGImage: CGBitmapContextCreateImage(context)!)
+    return UIImage(cgImage: context!.makeImage()!)
   }
 }

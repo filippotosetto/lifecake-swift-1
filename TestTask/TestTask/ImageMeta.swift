@@ -10,9 +10,9 @@ import UIKit
 
 class ImageMeta {
   
-  private static var datesHistory = [String: [NSDate]]()
-  private var content: UIImage!
-  private var name: String!
+  fileprivate static var datesHistory = [String: [Date]]()
+  fileprivate var content: UIImage!
+  fileprivate var name: String!
   
   lazy var imageSize: () -> String = {
     return "\(self.content.size)"
@@ -25,15 +25,15 @@ class ImageMeta {
     
     if var dates = dates {
       let lastDate = dates.last!
-      dates.append(NSDate())
+      dates.append(Date())
      
-      let calendar = NSCalendar.currentCalendar()
-      let components = calendar.components([.Hour, .Minute, .Second], fromDate: lastDate)
+      let calendar = Calendar.current
+      let components = (calendar as NSCalendar).components([.hour, .minute, .second], from: lastDate)
       
-      return "\(components.hour):\(components.minute):\(components.second)"
+      return "\(String(describing: components.hour)):\(String(describing: components.minute)):\(String(describing: components.second))"
       
     } else {
-      dates = [NSDate()]
+      dates = [Date()]
       ImageMeta.datesHistory[self.name] = dates
       
       return "no date"

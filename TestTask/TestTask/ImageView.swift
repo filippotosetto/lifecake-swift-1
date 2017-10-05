@@ -10,9 +10,9 @@ import UIKit
 
 class ImageView: UIView {
   
-  @IBOutlet private weak var imageView: UIImageView!
+  @IBOutlet fileprivate weak var imageView: UIImageView!
 
-  func setupWithImage(image: UIImage, inView view: UIView) {
+  func setupWithImage(_ image: UIImage, inView view: UIView) {
     self.imageView.image = image
     view.addSubview(self)
   }
