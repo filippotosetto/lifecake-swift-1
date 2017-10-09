@@ -1,5 +1,7 @@
 # lifecake-swift
 
+
+
 Clone project. Create separate branch, where all fixes will be committed. Commit your code after each fix.
 
 •  project is converted to work with Xcode 9, Swift 4
